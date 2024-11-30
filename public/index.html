@@ -7,5 +7,14 @@
 </head>
 <body>
     <h1>Hello</h1>
+    <button onclick=connection()>Click To Connection</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+       function connection(){    
+        const socket=io();
+        console.log('Socket connected:', socket);
+       }
+       
+    </script>
 </body>
 </html>
