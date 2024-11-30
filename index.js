@@ -20,4 +20,4 @@ app.get("/",(req,res)=>{
     return res.sendFile("./public/index.html")  
 })
 
-app.listen(9000,()=>console.log("Server started At",9000));
+app.listen(9000,()=>console.log("Server started At- http://localhost:9000"));
