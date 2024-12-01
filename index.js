@@ -1,23 +1,30 @@
-const http=require("http");
-const express=require("express");
-const exp = require("constants");
+const http = require("http");
+const express = require("express");
 const path = require("path");
-const {Server}=require("socket.io");
+const { Server } = require("socket.io");
 
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server); // Bind Socket.IO to the HTTP server
 
-const app=express();
-const server=http.createServer(app);
-const io=new Server(server);
- 
-app.use(express.static(path.resolve("./public"))); 
+// Serve static files from the "public" directory
+app.use(express.static(path.resolve("./public")));
 
-//socket.io
-io.on("connection",(Socket)=>{
-    console.log("New user Connect",Socket.id);
-})
+// Handle WebSocket connections
+io.on("connection", (socket) => {
+  // Listen for user messages
+  socket.on("user-message", (message) => {
+    console.log(`Message from ${socket.id}: ${message}`); // Debugging log
+    io.emit("message", message); // Broadcast the message to all clients
+});
+});
 
-app.get("/",(req,res)=>{
-    return res.sendFile("./public/index.html")  
-})
+// Serve the main HTML file
+app.get("/", (req, res) => {
+    res.sendFile(path.resolve("./public/index.html"));
+});
 
-app.listen(9000,()=>console.log("Server started At- http://localhost:9000"));
+// Start the server
+server.listen(9000, () => {
+    console.log("Server started on ", 9000);
+});

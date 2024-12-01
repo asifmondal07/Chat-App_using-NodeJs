@@ -6,15 +6,33 @@
     <title>Chat App</title>
 </head>
 <body>
-    <h1>Hello</h1>
-    <button onclick=connection()>Click To Connection</button>
+    <h1>Chat App</h1>
+   
+    <input type="text" id="message" placeholder="Type your message">
+    <button id="sentBtn">Send</button> <!-- Send button -->
+    <div id="messages"></div> <!-- Div to display messages -->
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
-       function connection(){    
-        const socket=io();
-        console.log('Socket connected:', socket);
-       }
-       
+        const socket = io(); // Connect to the server
+        const sentbtn = document.getElementById("sentBtn"); // Send button
+        const messageInput = document.getElementById("message"); // Input field
+        const allMessages = document.getElementById("messages"); // Message container
+
+        // Listen for "message" events from the server
+        socket.on("message", (message) => {
+            const p = document.createElement("p"); // Create a new paragraph
+            p.innerText = message; // Set the paragraph text
+            allMessages.appendChild(p); // Append to the container
+        });
+
+        // Send a message when the button is clicked
+        sentbtn.addEventListener("click", () => {
+            const message = messageInput.value; // Get the input value
+            if (message.trim() === "") return; // Prevent empty messages
+            socket.emit("user-message", message); // Send the message to the server
+            messageInput.value = ""; // Clear the input
+        });
     </script>
 </body>
 </html>
